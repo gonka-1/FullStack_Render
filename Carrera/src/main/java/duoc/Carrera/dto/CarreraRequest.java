@@ -8,8 +8,6 @@ public class CarreraRequest {
     @NotBlank(message = "El nombre de la carrera es obligatorio")
     private String nombre;
 
-    @NotBlank(message = "El nombre es obligartorio")
-    @Size(max = 10, message =  "El código no debe de superar los 10 caracteres")
     private int codigoCarrera;
 
     private String duracionSemestre;
