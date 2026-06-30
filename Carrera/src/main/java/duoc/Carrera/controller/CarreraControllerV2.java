@@ -56,7 +56,7 @@ public class CarreraControllerV2 {
         req.setNombre(carrera.getNombre());
         req.setCodigoCarrera(carrera.getCodigoCarrera());
         req.setDuracionSemestre(carrera.getDuracionSemestre());
-        req.setEstadoCarrera(req.getEstadoCarrera());
+        req.setEstadoCarrera(carrera.getEstadoCarrera());
 
         Carrera newCarrera = carreraService.crearDesdeRequest(req);
 
@@ -76,7 +76,7 @@ public class CarreraControllerV2 {
         req.setNombre(carrera.getNombre());
         req.setCodigoCarrera(carrera.getCodigoCarrera());
         req.setDuracionSemestre(carrera.getDuracionSemestre());
-        req.setEstadoCarrera(req.getEstadoCarrera());
+        req.setEstadoCarrera(carrera.getEstadoCarrera());
 
         Carrera updatedCarrera = carreraService.actualizar(id, req);
 
