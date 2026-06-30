@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -19,39 +20,34 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                // Para esta clase se deshabilita CSRF porque estamos probando una API REST.
+        @Bean
+        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+            http
                 .csrf(csrf -> csrf.disable())
-
-                // Stateless significa que el servidor NO guardará sesión.
-                // Toda la identidad viajará dentro del token.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Reglas de acceso.
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas de tu API
-                        .requestMatchers("/auth/**", "/api/publico/**").permitAll()
+                    // Rutas públicas de tu API
+                    .requestMatchers("/auth/**", "/api/publico/**").permitAll()
 
-                        // LISTA BLANCA DEFINITIVA PARA SWAGGER UI
-                        .requestMatchers(
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/error"
-                        ).permitAll()
+                    // LISTA BLANCA DEFINITIVA PARA SWAGGER UI
+                    .requestMatchers(
+                            "/swagger-ui.html",
+                            "/swagger-ui/**",
+                            "/v3/api-docs",
+                            "/v3/api-docs/**",
+                            "/swagger-resources/**",
+                            "/webjars/**",
+                            "/error"
+                    ).permitAll()
 
-                        // Todo lo demás bloqueado sin token
-                        .anyRequest().authenticated()
-                )
+                    // Permitir GET de estudiantes para llamadas internas entre microservicios
+                    .requestMatchers(HttpMethod.GET, "/api/v1/estudiantes/**").permitAll()
 
-                // Antes de llegar al controller, Spring ejecuta nuestro filtro JWT.
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                    // Todo lo demás bloqueado sin token
+                    .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+}
 }

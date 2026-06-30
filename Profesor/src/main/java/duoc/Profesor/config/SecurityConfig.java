@@ -31,21 +31,17 @@ public class SecurityConfig {
                 // Toda la identidad viajará dentro del token.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // Reglas de acceso.
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas de tu API
                         .requestMatchers("/auth/**", "/api/publico/**").permitAll()
-
-                        // LISTA BLANCA DEFINITIVA PARA SWAGGER UI
+                        
                         .requestMatchers(
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/error"
+                            "/swagger-ui.html", "/swagger-ui/**",
+                            "/v3/api-docs", "/v3/api-docs/**",
+                            "/swagger-resources/**", "/webjars/**", "/error"
                         ).permitAll()
+        
+                         // Permitir GET de profesores para llamadas internas entre microservicios
+                        .requestMatchers(HttpMethod.GET, "/api/v1/profesores/**").permitAll()
 
                         // Todo lo demás bloqueado sin token
                         .anyRequest().authenticated()
