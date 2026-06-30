@@ -76,7 +76,7 @@ public class CarreraControllerV2 {
         req.setNombre(carrera.getNombre());
         req.setCodigoCarrera(carrera.getCodigoCarrera());
         req.setDuracionSemestre(carrera.getDuracionSemestre());
-        req.setEstadoCarerra(req.getEstadoCarerra());
+        req.setEstadoCarrera(req.getEstadoCarrera());
 
         Carrera updatedCarrera = carreraService.actualizar(id, req);
 
