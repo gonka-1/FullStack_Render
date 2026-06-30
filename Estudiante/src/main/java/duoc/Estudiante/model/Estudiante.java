@@ -26,6 +26,5 @@ public class Estudiante {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private Long CarreraId;
-}
+    @Column(nullable = false, name = "carrera_id")
+    private Long carreraId; 
