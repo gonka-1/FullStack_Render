@@ -1,0 +1,35 @@
+server:
+  port: ${PORT:8088}
+
+spring:
+  application:
+    name: ms-evaluaciones
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5432/db_evaluaciones}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html 
+
+curso-service:
+  url: ${GATEWAY_URL:http://127.0.0.1:8080}/api/v1/cursos
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://127.0.0.1:8761/eureka/}
+  instance:
+    prefer-ip-address: true

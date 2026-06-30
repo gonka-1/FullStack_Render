@@ -1,0 +1,243 @@
+version: '3.8'
+
+services:
+  # Base de Datos Centralizada para la Escuela
+  db-mysql:
+    image: mysql:8.0
+    container_name: db_mysql_escuela
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    networks:
+      - escuela-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Servidor Eureka (Descubrimiento)
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_CLIENT_REGISTER_WITH_EUREKA=false
+      - EUREKA_CLIENT_FETCH_REGISTRY=false
+
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-server
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+
+  # Microservicio Estudiante
+  estudiante-service:
+    build: ./Estudiante
+    container_name: estudiante-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_estudiante?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  # Microservicio Curso
+  curso-service:
+    build: ./Curso
+    container_name: curso-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_cursos?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Matricula
+  matricula-service:
+    build: ./Matricula
+    container_name: matricula-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_matricula?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Asistencia
+  asistencia-service:
+    build: ./Asistencia
+    container_name: asistencia-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_asistencia?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Nota
+  nota-service:
+    build: ./Nota
+    container_name: nota-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_notas?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Seccion
+  seccion-service:
+    build: ./Seccion
+    container_name: seccion-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_secciones?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Sala
+  sala-service:
+    build: ./Sala
+    container_name: sala-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_salas?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  # Microservicio Evaluacion
+  evaluacion-service:
+    build: ./Evaluacion
+    container_name: evaluacion-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_evaluaciones?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+      - GATEWAY_URL=http://api-gateway:8080
+
+  # Microservicio Profesor
+  profesor-service:
+    build: ./Profesor
+    container_name: profesor-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_profesor?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+  # Microservicio Carrera (Cambiado puerto a 8090)
+  carrera-service:
+    build: ./Carrera
+    container_name: carrera-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      db-mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+    networks:
+      - escuela-network
+    environment:
+      - EUREKA_SERVER_URL=http://eureka-server:8761/eureka/
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/db_carrera?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+
+networks:
+  escuela-network:
+    driver: bridge

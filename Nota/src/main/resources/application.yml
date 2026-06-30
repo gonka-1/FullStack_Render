@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:8085}
+
+spring:
+  application:
+    name: ms-notas
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5432/db_notas} 
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html 
+
+ms-matriculas:
+  url: ${GATEWAY_URL:http://localhost:8080}/api/v1/matriculas
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://127.0.0.1:8761/eureka/}
+  instance:
+    prefer-ip-address: true
