@@ -31,7 +31,9 @@ public class SecurityConfig {
 
                 // Reglas de acceso.
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas de tu API
+                        
+                        .requestMatchers("/api/v1/carreras/**").permitAll()
+                        
                         .requestMatchers("/auth/**", "/api/publico/**").permitAll()
 
                         // LISTA BLANCA DEFINITIVA PARA SWAGGER UI
@@ -44,7 +46,6 @@ public class SecurityConfig {
                                 "/webjars/**",
                                 "/error"
                         ).permitAll()
-
                         // Todo lo demás bloqueado sin token
                         .anyRequest().authenticated()
                 )
