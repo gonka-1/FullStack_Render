@@ -45,7 +45,7 @@ public class CarreraRequest {
         return estadoCarrera;
     }
 
-    public void setEstadoCarrera(String estadoCarerra) {
+    public void setEstadoCarrera(String estadoCarrera) {
         this.estadoCarrera = estadoCarrera;
     }
 }
