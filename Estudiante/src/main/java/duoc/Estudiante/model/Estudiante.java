@@ -28,3 +28,5 @@ public class Estudiante {
 
     @Column(nullable = false, name = "carrera_id")
     private Long carreraId; 
+
+}
