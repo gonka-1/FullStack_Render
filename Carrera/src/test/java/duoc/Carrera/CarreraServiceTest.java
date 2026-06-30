@@ -31,7 +31,7 @@ class CarreraServiceTest {
         request.setNombre("Ingeniería en Informática");
         request.setCodigoCarrera(2021);
         request.setDuracionSemestre("8 Semestres");
-        request.setEstadoCarerra("Activa");
+        request.setEstadoCarrera("Activa");
 
         Carrera carreraGuardada = new Carrera();
         carreraGuardada.setId(1L); // Simulamos que la BD le asignó un ID
